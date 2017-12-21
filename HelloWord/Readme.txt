@@ -1,1 +1,0 @@
-This is a "Hello World" from scrard in ASP.Net Core MVC
