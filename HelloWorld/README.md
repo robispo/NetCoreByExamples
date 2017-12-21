@@ -5,7 +5,7 @@ This is a "Hello World" from scratch in ASP.Net Core MVC
 ## Steps
 
 1. Create a new project **ASP.Net Core** with an empty template.
-2. At the **Starup.cs** in the **ConfigureServices** method add mvc.
+2. At the **Startup.cs** in the **ConfigureServices** method add mvc.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -14,7 +14,7 @@ public void ConfigureServices(IServiceCollection services)
         }
 ```
 
-3. At the **Starup.cs** in the **Configure** method use mvc for default routing and static files to access flat files (Optinal).
+3. At the **Startup.cs** in the **Configure** method use mvc for default routing and static files to access flat files (Optional).
 
 ```csharp
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -35,5 +35,5 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         }
 ```
 
-4. Add a folder call **Controlles** and add a default empty controller call **HomeController**, in the default routing is the name that we specific.
-5. Inside of **HomeController** rithg click in **Index** action and chouse "add view" option.
+4. Add a folder call **Controllers** and add a default empty controller call **HomeController**, in the default routing is the name that we specific.
+5. Inside of **HomeController** right click in **Index** action and chose "add view" option.
