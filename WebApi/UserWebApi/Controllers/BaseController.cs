@@ -5,6 +5,7 @@ using System.Linq;
 namespace UserWebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class BaseController : Controller
     {
         protected readonly UserContext _userContext;
