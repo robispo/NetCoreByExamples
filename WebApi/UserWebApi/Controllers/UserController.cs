@@ -5,11 +5,13 @@ using UserWebApi.Models;
 
 namespace UserWebApi.Controllers
 {
+    [Route("api/users")]
+    [FormatFilter]
     public class UserController : BaseController
     {
         public UserController(UserContext _userContext) : base(_userContext) { }
 
-        [HttpGet]
+        [HttpGet()]
         public IEnumerable<UserEntity> GetUserAll()
         {
             return
