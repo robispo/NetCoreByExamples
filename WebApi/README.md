@@ -1,7 +1,7 @@
 # Webapi
 
-This is a "Webapi of user" from scratch in ASP.Net Core MVC
-In this example we change the default json response format to SnakeCase.
+* This is a "Webapi of user" from scratch in ASP.Net Core MVC
+* In this example we change the default json response format to SnakeCase.
 
 ## Steps
 
