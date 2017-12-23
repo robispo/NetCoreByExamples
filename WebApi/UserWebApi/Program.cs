@@ -20,6 +20,7 @@ namespace UserWebApi
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseUrls("http://localhost:5000")
                 .Build();
     }
 }
