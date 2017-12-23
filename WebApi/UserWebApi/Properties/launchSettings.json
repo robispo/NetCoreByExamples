@@ -13,7 +13,9 @@
             "launchBrowser": true,
             "launchUrl": "api/users",
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "SecurityKey": "SecurityKeySecurityKey",
+                "Domain": "localhost"
             }
         },
         "UserWebApi": {
@@ -21,7 +23,9 @@
             "launchBrowser": true,
             "launchUrl": "api/users",
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "SecurityKey": "SecurityKeySecurityKey",
+                "Domain": "localhost"
             },
             "applicationUrl": "http://localhost:8611/"
         }
