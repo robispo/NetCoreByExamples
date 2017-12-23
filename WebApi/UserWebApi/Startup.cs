@@ -28,6 +28,7 @@ namespace UserWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserList"));
+
             services.AddMvc()
                 .AddJsonOptions(opt =>
                 {
