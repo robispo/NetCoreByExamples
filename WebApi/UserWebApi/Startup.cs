@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Serialization;
 using UserWebApi.Models;
 
 namespace UserWebApi
@@ -26,7 +28,17 @@ namespace UserWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserList"));
-            services.AddMvc();
+
+            services.AddMvc()
+                .AddJsonOptions(opt =>
+                {
+                    var resolver = opt.SerializerSettings.ContractResolver;
+                    if (resolver != null)
+                    {
+                        var res = resolver as DefaultContractResolver;
+                        res.NamingStrategy = new SnakeCaseNamingStrategy();  // <<!-- this removes the camelcasing
+                    }
+                }); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
