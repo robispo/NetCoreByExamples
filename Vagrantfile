@@ -32,6 +32,12 @@ Vagrant.configure(2) do |config|
 
         sudo apt-get update
         sudo apt-get install dotnet-sdk-2.0.3 -y
+
+        apt-get update
+        apt-get install -y nginx
+        sudo apt-get clean
+
+        service nginx restart
     SCRIPT
   
     config.vm.provision "shell", inline: $script
