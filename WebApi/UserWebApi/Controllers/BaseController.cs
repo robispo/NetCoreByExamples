@@ -28,7 +28,8 @@ namespace UserWebApi.Controllers
                     Address = "Address",
                     FirstName = "Rabel",
                     LastName = "Obispo",
-                    NickName = "robispo"
+                    NickName = "robispo",
+                    Password = "robispo"
                 });
 
                 _userContext.UserEntities.Add(new UserEntity
@@ -39,7 +40,8 @@ namespace UserWebApi.Controllers
                     Address = "Address1",
                     FirstName = "Javis",
                     LastName = "Perez",
-                    NickName = "jperez"
+                    NickName = "jperez",
+                    Password = "jperez"
                 });
 
                 _userContext.UserEntities.Add(new UserEntity
@@ -50,7 +52,8 @@ namespace UserWebApi.Controllers
                     Address = "Address3",
                     FirstName = "Jose",
                     LastName = "De Leon",
-                    NickName = "jdeleon"
+                    NickName = "jdeleon",
+                    Password = "jdeleon"
                 });
 
                 _userContext.SaveChanges();
