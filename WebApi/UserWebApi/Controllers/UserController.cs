@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UserWebApi.Models;
+using UserWebApi.Services;
 
 namespace UserWebApi.Controllers
 {
     [Route("api/users")]
     public class UserController : BaseController
     {
-        public UserController(UserContext _userContext) : base(_userContext) { }
+        public UserController(UserContext userContext, IJwtService jwtService) : base(userContext, jwtService) { }
+
 
         [HttpGet()]
         public IEnumerable<UserEntity> GetUserAll()

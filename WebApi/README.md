@@ -19,3 +19,5 @@
 5. [Authentication with JWT](https://jonhilton.net/security/apis/secure-your-asp.net-core-2.0-api-part-2---jwt-bearer-authentication/)
 6. [Authentication with JWT](https://medium.com/@lugrugzo/asp-net-core-2-0-webapi-jwt-authentication-with-identity-mysql-3698eeba6ff8)
 7. [Policy Authentication with JWT](http://hamidmosalla.com/2017/10/19/policy-based-authorization-using-asp-net-core-2-and-json-web-token-jwt/)
+8. [Middleware to add header](https://andrewlock.net/adding-default-security-headers-in-asp-net-core/)
+9. [Validate Jwt token](https://www.jerriepelser.com/blog/manually-validating-rs256-jwt-dotnet/)

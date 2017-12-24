@@ -1,6 +1,7 @@
 ﻿using UserWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using UserWebApi.Services;
 
 namespace UserWebApi.Controllers
 {
@@ -9,10 +10,12 @@ namespace UserWebApi.Controllers
     public class BaseController : Controller
     {
         protected readonly UserContext _userContext;
+        protected readonly IJwtService _jwtService;
 
-        public BaseController(UserContext userContext)
+        public BaseController(UserContext userContext, IJwtService jwtService)
         {
             _userContext = userContext;
+            _jwtService = jwtService;            
             this.DefaultAdd();
         }
 
