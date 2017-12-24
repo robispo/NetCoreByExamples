@@ -27,6 +27,7 @@ namespace UserWebApi.Services
         TokenValidationParameters _tokenValidationParameters;
         IConfiguration _configuration;
         readonly string _baererph, _tokenName;
+        readonly IEnumerable<string> _registeredClaimUse;
 
         public JwtService(IConfiguration configuration)
         {
@@ -36,6 +37,7 @@ namespace UserWebApi.Services
             _tokenHandler = new JwtSecurityTokenHandler();
             _baererph = "Bearer ";
             _tokenName = "Authorization";
+            _registeredClaimUse = new string[] { "iss", "exp", "aud" };
 
             _tokenValidationParameters = new TokenValidationParameters
             {
@@ -74,7 +76,8 @@ namespace UserWebApi.Services
         {
             string auth;
             SecurityToken validatedToken;
-            ClaimsPrincipal claimsPrincipal;            
+            ClaimsPrincipal claimsPrincipal;
+            IEnumerable<Claim> claims;
 
             auth = context.Request.Headers[_tokenName];
 
@@ -87,11 +90,12 @@ namespace UserWebApi.Services
                     try
                     {
                         claimsPrincipal = _tokenHandler.ValidateToken(auth, _tokenValidationParameters, out validatedToken);
-                        this.GenerateToken(context, claimsPrincipal.Claims);
+                        claims = claimsPrincipal.Claims.Where(c => !_registeredClaimUse.Contains(c.Type));
+                        this.GenerateToken(context, claims);
                     }
                     catch (Exception)
                     {
-                    }                    
+                    }
                 }
             }
         }
