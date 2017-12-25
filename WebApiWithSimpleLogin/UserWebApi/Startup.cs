@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using UserWebApi.Models;
+using UserWebApi.Services;
 
 namespace UserWebApi
 {
@@ -20,20 +23,26 @@ namespace UserWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //This the implementation of EntityFramework using memory database.
+            JwtService jwtService;
+
+            services.AddSingleton<IConfiguration>(Configuration);
+
+            jwtService = new JwtService(Configuration);
+            services.Add(new ServiceDescriptor(typeof(IJwtService), jwtService));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => jwtService.RulesTokenValidation(options));
+
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
 
             services.AddMvc()
-                // This change the format of the json response to a snakecase.
                 .AddJsonOptions(opt =>
                 {
                     var resolver = opt.SerializerSettings.ContractResolver;
                     if (resolver != null)
                     {
                         var res = resolver as DefaultContractResolver;
-                        res.NamingStrategy = new SnakeCaseNamingStrategy();
-                        //res.NamingStrategy = new CamelCaseNamingStrategy();
-                        //res.NamingStrategy = null; //This use the format of you already had.
+                        res.NamingStrategy = new SnakeCaseNamingStrategy();  // <<!-- this removes the camelcasing
                     }
                 }); ;
         }
@@ -46,6 +55,7 @@ namespace UserWebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

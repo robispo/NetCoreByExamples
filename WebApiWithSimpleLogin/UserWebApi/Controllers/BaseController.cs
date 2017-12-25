@@ -1,18 +1,21 @@
 ﻿using UserWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using UserWebApi.Services;
 
 namespace UserWebApi.Controllers
 {
     [Route("api/[controller]")]
-    [Produces("application/json")] //All the response in this controller are set to json, not matter what.
+    [Produces("application/json")]
     public class BaseController : Controller
     {
         protected readonly UserContext _userContext;
+        protected readonly IJwtService _jwtService;
 
-        public BaseController(UserContext userContext)
+        public BaseController(UserContext userContext, IJwtService jwtService)
         {
-            _userContext = userContext;           
+            _userContext = userContext;
+            _jwtService = jwtService;            
             this.DefaultAdd();
         }
 

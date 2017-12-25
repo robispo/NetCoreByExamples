@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UserWebApi.Models;
-using UserWebApi.Services;
 
 namespace UserWebApi.Controllers
 {
-    [Route("api/users")]
+    [Route("api/users")] //Url http://{domain}/api/users
     public class UserController : BaseController
     {
-        public UserController(UserContext userContext, IJwtService jwtService) : base(userContext, jwtService) { }
+        public UserController(UserContext userContext) : base(userContext) { }
 
 
         [HttpGet()]
@@ -28,87 +27,83 @@ namespace UserWebApi.Controllers
         }
 
         [HttpPost]
-        public ResponseMessage InsertUser([FromBody]UserEntity user)
+        public IActionResult InsertUser([FromBody]UserEntity user)
         {
-            ResponseMessage result;
+            UserEntity result;
 
             try
             {
+                user.Id = _userContext.UserEntities.Count() + 1;
                 _userContext.UserEntities.Add(user);
                 _userContext.SaveChanges();
-                result = new ResponseMessage
-                {
-                    Code = 1,
-                    Message = "Success!!!"
-                };
+                result = _userContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
+
+                return
+                    Ok(result);
             }
             catch (Exception ex)
             {
-                result = new ResponseMessage
-                {
-                    Code = 2,
-                    Message = ex.Message
-                };
+                return
+                    BadRequest(new { Message = ex.Message });
             }
-
-            return
-                result;
         }
 
         [HttpPut]
-        public ResponseMessage UpdateUser([FromBody]UserEntity user)
+        public IActionResult UpdateUser([FromBody]UserEntity user)
         {
-            ResponseMessage result;
+            UserEntity result;
 
             try
             {
-                _userContext.UserEntities.Update(user);
-                _userContext.SaveChanges();
-                result = new ResponseMessage
+                if (_userContext.UserEntities.Any(u => u.Id == user.Id))
                 {
-                    Code = 1,
-                    Message = "Success!!!"
-                };
+                    _userContext.UserEntities.Update(user);
+                    _userContext.SaveChanges();
+                    result = _userContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
+
+                    return
+                        Ok(result);
+                }
+                else
+                {
+                    return
+                        BadRequest(new { Message = "user don not exists." });
+                }
             }
             catch (Exception ex)
             {
-                result = new ResponseMessage
-                {
-                    Code = 2,
-                    Message = ex.Message
-                };
+                return
+                    BadRequest(new { Message = ex.Message });
             }
-
-            return
-                result;
         }
 
         [HttpDelete("{userLogin}")]
-        public ResponseMessage DeleteUser(string userLogin)
+        public IActionResult DeleteUser(string userLogin)
         {
-            ResponseMessage result;
+            UserEntity result;
 
             try
             {
-                _userContext.UserEntities.Remove(_userContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin));
-                _userContext.SaveChanges();
-                result = new ResponseMessage
+                if (_userContext.UserEntities.Any(u => u.UserLogin == userLogin))
                 {
-                    Code = 1,
-                    Message = "Success!!!"
-                };
+                    result = _userContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
+                    _userContext.UserEntities.Remove(result);
+                    _userContext.SaveChanges();
+
+                    return
+                        Ok(result);
+                }
+                else
+                {
+                    return
+                        BadRequest(new { Message = "user don not exists." });
+                }
             }
             catch (Exception ex)
             {
-                result = new ResponseMessage
-                {
-                    Code = 2,
-                    Message = ex.Message
-                };
+                return
+                    BadRequest(new { Message = ex.Message });
             }
-
-            return
-                result;
         }
     }
 }
