@@ -8,17 +8,20 @@
 
 1. Create simple get of users.
 2. Change to routing.
-3. All the response are set to json format.
+
+```csharp
+    [Route("api/users")] //Url http://{domain}/api/users
+    public class UserController : BaseController
+```
+
+3. All responses are set to json format.
+
+```csharp
+    [Produces("application/json")] //All the response in this controller are set to json, not matter what.
+    public class BaseController : Controller
+```
+
 3. Change JSON response format (namingstrategy) into snakecase, REST standards.
-4. Add the whole CRUD to the users.
-
-## Support Links
-
-1. [.Net Core](http://www.tutorialsteacher.com/core)
-2. [Change JSON format](https://weblog.west-wind.com/posts/2016/Jun/27/Upgrading-to-ASPNET-Core-RTM-from-RC2#ToCamelCaseorNot)
-3. [SnakeCaseNamingStrategy](https://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_Serialization_SnakeCaseNamingStrategy.htm)
-
-## Code
 
 ```csharp
         public void ConfigureServices(IServiceCollection services)
@@ -42,12 +45,10 @@
         }
 ```
 
-```csharp
-    [Produces("application/json")] //All the response in this controller are set to json, not matter what.
-    public class BaseController : Controller
-```
+4. Add the whole CRUD to the users.
 
-```csharp
-    [Route("api/users")] //Url http://{domain}/api/users
-    public class UserController : BaseController
-```
+## Support Links
+
+1. [.Net Core](http://www.tutorialsteacher.com/core)
+2. [Change JSON format](https://weblog.west-wind.com/posts/2016/Jun/27/Upgrading-to-ASPNET-Core-RTM-from-RC2#ToCamelCaseorNot)
+3. [SnakeCaseNamingStrategy](https://www.newtonsoft.com/json/help/html/T_Newtonsoft_Json_Serialization_SnakeCaseNamingStrategy.htm)
