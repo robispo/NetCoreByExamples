@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using UserWebApi.Models;
-using UserWebApi.Services;
 
 namespace UserWebApi
 {
@@ -34,41 +20,20 @@ namespace UserWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            JwtService jwtService;
-
-            services.AddSingleton<IConfiguration>(Configuration);
-
-            jwtService = new JwtService(Configuration);
-            services.Add(new ServiceDescriptor(typeof(IJwtService), jwtService));
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => jwtService.RulesTokenValidation(options));
-
-
-            DbContextOptions<UserContext> dbOptions;
-            DbContextOptionsBuilder<UserContext> dboBuilder = new DbContextOptionsBuilder<UserContext>();
-            dboBuilder.UseInMemoryDatabase("WebapiTest");
-            dbOptions = dboBuilder.Options;
-
+            //This the implementation of EntityFramework using memory database.
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
-                options.AddPolicy("BlacklistingJwt", policy => policy.Requirements.Add(new BlacklistingJwtMiddleware(new UserContext(dbOptions), Configuration)));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, BlacklistingJwtMiddlewareHandler>();
-
-
             services.AddMvc()
+                // This change the format of the json response to a snakecase.
                 .AddJsonOptions(opt =>
                 {
                     var resolver = opt.SerializerSettings.ContractResolver;
                     if (resolver != null)
                     {
                         var res = resolver as DefaultContractResolver;
-                        res.NamingStrategy = new SnakeCaseNamingStrategy();  // <<!-- this removes the camelcasing
+                        res.NamingStrategy = new SnakeCaseNamingStrategy();
+                        //res.NamingStrategy = new CamelCaseNamingStrategy();
+                        //res.NamingStrategy = null; //This use the format of you already had.
                     }
                 }); ;
         }
@@ -81,8 +46,6 @@ namespace UserWebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseValidateAndRenewToken();
-            app.UseAuthentication();
             app.UseMvc();
         }
     }

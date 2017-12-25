@@ -19,6 +19,5 @@ namespace UserWebApi.Models
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
         public DbSet<UserEntity> UserEntities { get; set; }
-
     }
 }
