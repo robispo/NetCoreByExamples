@@ -34,6 +34,11 @@ namespace UserWebApi
 
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
+            });
+
             services.AddMvc()
                 .AddJsonOptions(opt =>
                 {

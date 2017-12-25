@@ -11,7 +11,7 @@
         "IIS Express": {
             "commandName": "IISExpress",
             "launchBrowser": true,
-            "launchUrl": "api/users",
+            "launchUrl": "api/auth/test",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "securityKey": "SecurityKeySecurityKey",
@@ -21,7 +21,7 @@
         "UserWebApi": {
             "commandName": "Project",
             "launchBrowser": true,
-            "launchUrl": "api/users",
+            "launchUrl": "api/auth/test",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "securityKey": "SecurityKeySecurityKey",

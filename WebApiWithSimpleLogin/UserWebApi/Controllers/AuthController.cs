@@ -19,11 +19,12 @@ namespace UserWebApi.Controllers
         [HttpPost]
         public IActionResult LogIn([FromBody]AuthModel authModel)
         {
+            // This is the code that validate the user, this is upto you, this is only example test.
             if (authModel != null && _userContext.UserEntities.Any(u => u.UserLogin == authModel.UserName && u.Password == authModel.Password))
             {
                 IEnumerable<Claim> claims;
                 claims = authModel.UserName == "robispo"
-                            ? new[] { new Claim(ClaimTypes.Name, authModel.UserName), new Claim("SuperTester", "true") }
+                            ? new[] { new Claim(ClaimTypes.Name, authModel.UserName), new Claim("SuperTester", "true") } //With this we give access to only a specific user to SuperTest.
                             : new[] { new Claim(ClaimTypes.Name, authModel.UserName) };
 
                 _jwtService.GenerateToken(Request.HttpContext, claims);
