@@ -10,19 +10,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using UserWebApi.Models;
+using UserWebApi.Services;
 
 namespace UserWebApi.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "BlacklistingJwt")]
     [Route("api/auth")]
     public class AuthController : BaseController
     {
-        public AuthController(UserContext _userContext) : base(_userContext) { }
+        public AuthController(UserContext userContext, IJwtService jwtService) : base(userContext, jwtService) { }
 
         [AllowAnonymous]
         [HttpPost]
         public object LogIn([FromBody]AuthModel authModel)
         {
+            //string token;
+
             if (authModel != null && _userContext.UserEntities.Any(u => u.UserLogin == authModel.UserName && u.Password == authModel.Password))
             {
                 IEnumerable<Claim> claims;
@@ -35,18 +38,11 @@ namespace UserWebApi.Controllers
                     claims = new[] { new Claim(ClaimTypes.Name, authModel.UserName) };
                 }
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SecurityKey")));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                var token = new JwtSecurityToken(
-                    issuer: Environment.GetEnvironmentVariable("Domain"),
-                    audience: Environment.GetEnvironmentVariable("Domain"),
-                    claims: claims,
-                    expires: DateTime.Now.AddMinutes(30),
-                    signingCredentials: creds);
+                _jwtService.GenerateToken(Request.HttpContext,claims);
+                //Request.HttpContext.Response.Headers.Add("token", token);
 
                 return
-                    new { token = new JwtSecurityTokenHandler().WriteToken(token) };
+                    Ok();
             }
             else
             {
