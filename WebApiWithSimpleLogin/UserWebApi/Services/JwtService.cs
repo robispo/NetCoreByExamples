@@ -25,12 +25,14 @@ namespace UserWebApi.Services
         JwtSecurityTokenHandler _tokenHandler;
         TokenValidationParameters _tokenValidationParameters;
         IConfiguration _configuration;
-        readonly string _baererph, _tokenName;
+        readonly string _baererph, _tokenName, _securityKey, _domain;
 
         public JwtService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["securityKey"]));
+            _securityKey = _configuration["securityKey"];
+            _domain = _configuration["domain"];
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securityKey));
             _creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
             _tokenHandler = new JwtSecurityTokenHandler();
             _baererph = "Bearer ";
@@ -42,11 +44,9 @@ namespace UserWebApi.Services
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = _configuration["domain"],
-                ValidAudience = _configuration["domain"],
-                IssuerSigningKey = _key,
-                SaveSigninToken = true,
-                ClockSkew = new TimeSpan(0, 0, 10)
+                ValidIssuer = _domain,
+                ValidAudience = _domain,
+                IssuerSigningKey = _key
             };
         }
 
@@ -57,8 +57,8 @@ namespace UserWebApi.Services
 
             token = new JwtSecurityToken
             (
-                issuer : _configuration["domain"],
-                audience : _configuration["domain"],
+                issuer : _domain,
+                audience : _domain,
                 claims : claims,
                 expires : DateTime.Now.AddMinutes(30),
                 signingCredentials : _creds

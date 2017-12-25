@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +34,11 @@ namespace UserWebApi
 
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
+            });
+
             services.AddMvc()
                 .AddJsonOptions(opt =>
                 {
@@ -42,7 +46,7 @@ namespace UserWebApi
                     if (resolver != null)
                     {
                         var res = resolver as DefaultContractResolver;
-                        res.NamingStrategy = new SnakeCaseNamingStrategy();  // <<!-- this removes the camelcasing
+                        res.NamingStrategy = new SnakeCaseNamingStrategy();
                     }
                 }); ;
         }
