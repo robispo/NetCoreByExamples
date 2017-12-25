@@ -23,12 +23,6 @@ namespace UserWebApi.Models
 
     }
 
-    public class ResponseMessage
-    {
-        public int Code { get; set; }
-        public string Message { get; set; }
-    }
-
     public class UserContext : DbContext
     {
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
