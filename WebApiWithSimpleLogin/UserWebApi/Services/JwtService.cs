@@ -17,7 +17,6 @@ namespace UserWebApi.Services
     {
         void GenerateToken(HttpContext context, IEnumerable<Claim> claims);
         void RulesTokenValidation(JwtBearerOptions jwtBearerOptions);
-        void ValidateAndRenewToken(HttpContext context);
     }
     public class JwtService : IJwtService
     {
@@ -26,18 +25,18 @@ namespace UserWebApi.Services
         JwtSecurityTokenHandler _tokenHandler;
         TokenValidationParameters _tokenValidationParameters;
         IConfiguration _configuration;
-        readonly string _baererph, _tokenName;
-        readonly IEnumerable<string> _registeredClaimUse;
+        readonly string _baererph, _tokenName, _securityKey, _domain;
 
         public JwtService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["securityKey"]));
+            _securityKey = _configuration["securityKey"];
+            _domain = _configuration["domain"];
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securityKey));
             _creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
             _tokenHandler = new JwtSecurityTokenHandler();
             _baererph = "Bearer ";
             _tokenName = "Authorization";
-            _registeredClaimUse = new string[] { "iss", "exp", "aud" };
 
             _tokenValidationParameters = new TokenValidationParameters
             {
@@ -45,11 +44,9 @@ namespace UserWebApi.Services
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = _configuration["domain"],
-                ValidAudience = _configuration["domain"],
-                IssuerSigningKey = _key,
-                SaveSigninToken = true,
-                ClockSkew = new TimeSpan(0, 0, 10)
+                ValidIssuer = _domain,
+                ValidAudience = _domain,
+                IssuerSigningKey = _key
             };
         }
 
@@ -60,8 +57,8 @@ namespace UserWebApi.Services
 
             token = new JwtSecurityToken
             (
-                issuer : _configuration["domain"],
-                audience : _configuration["domain"],
+                issuer : _domain,
+                audience : _domain,
                 claims : claims,
                 expires : DateTime.Now.AddMinutes(30),
                 signingCredentials : _creds
@@ -76,32 +73,6 @@ namespace UserWebApi.Services
             options.TokenValidationParameters = _tokenValidationParameters;
         }
 
-        public void ValidateAndRenewToken(HttpContext context)
-        {
-            string auth;
-            SecurityToken validatedToken;
-            ClaimsPrincipal claimsPrincipal;
-            IEnumerable<Claim> claims;
-
-            auth = context.Request.Headers[_tokenName];
-
-            if (!string.IsNullOrWhiteSpace(auth))
-            {
-                auth = auth.Replace(_baererph, string.Empty);
-
-                if (_tokenHandler.CanReadToken(auth))
-                {
-                    try
-                    {
-                        claimsPrincipal = _tokenHandler.ValidateToken(auth, _tokenValidationParameters, out validatedToken);
-                        claims = claimsPrincipal.Claims.Where(c => !_registeredClaimUse.Contains(c.Type));
-                        this.GenerateToken(context, claims);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            }
-        }
+     
     }
 }
