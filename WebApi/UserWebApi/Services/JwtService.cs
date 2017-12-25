@@ -32,7 +32,7 @@ namespace UserWebApi.Services
         public JwtService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecurityKey"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["securityKey"]));
             _creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
             _tokenHandler = new JwtSecurityTokenHandler();
             _baererph = "Bearer ";
@@ -45,9 +45,11 @@ namespace UserWebApi.Services
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = _configuration["Domain"],
-                ValidAudience = _configuration["Domain"],
-                IssuerSigningKey = _key
+                ValidIssuer = _configuration["domain"],
+                ValidAudience = _configuration["domain"],
+                IssuerSigningKey = _key,
+                SaveSigninToken = true,
+                ClockSkew = new TimeSpan(0, 0, 10)
             };
         }
 
@@ -56,12 +58,14 @@ namespace UserWebApi.Services
             JwtSecurityToken token;
             string tokenValue;
 
-            token = new JwtSecurityToken(
-               issuer: _configuration["Domain"],
-               audience: _configuration["Domain"],
-               claims: claims,
-               expires: DateTime.Now.AddMinutes(30),
-               signingCredentials: _creds);
+            token = new JwtSecurityToken
+            (
+                issuer : _configuration["domain"],
+                audience : _configuration["domain"],
+                claims : claims,
+                expires : DateTime.Now.AddMinutes(30),
+                signingCredentials : _creds
+            );
 
             tokenValue = _tokenHandler.WriteToken(token);
             context.Response.Headers.Add(_tokenName, string.Concat(_baererph, tokenValue));

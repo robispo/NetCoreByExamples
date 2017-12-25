@@ -14,8 +14,10 @@
             "launchUrl": "api/users",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "SecurityKey": "SecurityKeySecurityKey",
-                "Domain": "localhost"
+                "securityKey": "SecurityKeySecurityKey",
+                "domain": "localhost",
+                "applyGracePeriod": "true",
+                "gracePeriod": "10" /*Time in seconds*/
             }
         },
         "UserWebApi": {
@@ -25,7 +27,9 @@
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "SecurityKey": "SecurityKeySecurityKey",
-                "Domain": "localhost"
+                "Domain": "localhost",
+                "applyGracePeriod": "true",
+                "gracePeriod": "10" /*Time in seconds*/
             },
             "applicationUrl": "http://localhost:8611/"
         }

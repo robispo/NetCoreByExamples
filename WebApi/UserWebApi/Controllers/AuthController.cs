@@ -14,7 +14,7 @@ using UserWebApi.Services;
 
 namespace UserWebApi.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "BlacklistingJwt")]
     [Route("api/auth")]
     public class AuthController : BaseController
     {

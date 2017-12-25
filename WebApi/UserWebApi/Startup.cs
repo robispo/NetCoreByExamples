@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -43,24 +44,22 @@ namespace UserWebApi
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => jwtService.RulesTokenValidation(options));
 
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {                    
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = true,
-            //            ValidateAudience = true,
-            //            ValidateLifetime = true,
-            //            ValidateIssuerSigningKey = true,
-            //            ValidIssuer = Configuration["Domain"],
-            //            ValidAudience = Configuration["Domain"],
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))
-            //        };
-            //    });
 
-            services.AddAuthorization(options => options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true")));
+            DbContextOptions<UserContext> dbOptions;
+            DbContextOptionsBuilder<UserContext> dboBuilder = new DbContextOptionsBuilder<UserContext>();
+            dboBuilder.UseInMemoryDatabase("WebapiTest");
+            dbOptions = dboBuilder.Options;
 
-            services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserList"));
+            services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
+                options.AddPolicy("BlacklistingJwt", policy => policy.Requirements.Add(new BlacklistingJwtMiddleware(new UserContext(dbOptions), Configuration)));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, BlacklistingJwtMiddlewareHandler>();
+
 
             services.AddMvc()
                 .AddJsonOptions(opt =>
