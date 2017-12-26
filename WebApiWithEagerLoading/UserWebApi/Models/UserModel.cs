@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace UserWebApi.Models
 {
@@ -17,31 +18,29 @@ namespace UserWebApi.Models
         public string NickName { get; set; }
         public string Password { get; set; }
 
-        public ICollection<RoleEntity> Roles { get; set; }
+        public List<UserRoleEntity> Roles { get; set; }
     }
 
-    //public class UserRoleEntity
-    //{
-    //    [Column(Order = 0), Key]
-    //    public int UserId { get; set; }
-    //    [Column(Order = 1), Key]
-    //    public int RoleId { get; set; }
+    public class UserRoleEntity
+    {
+        public int UserId { get; set; }
+        public int RoleId { get; set; }
 
-    //}
+        public UserEntity User { get; set; }
+        public RoleEntity Role { get; set; }
+        public List<RolePermissionEntity> Permissions { get; set; }
+    }
 
-    //public class RolePermissionEntity
-    //{
-    //    [Column(Order = 0), Key]
-    //    public int RoleId { get; set; }
-    //    [Column(Order = 1), Key]
-    //    public int PermissionId { get; set; }
-    //}
+    public class RolePermissionEntity
+    {
+        public int RoleId { get; set; }
+        public int PermissionId { get; set; }
+    }
 
     public class RoleEntity
     {
         public int Id { get; set; }
         public string Role { get; set; }
-        public ICollection<PermissionEntity> Permissions { get; set; }
     }
 
     public class PermissionEntity
@@ -62,18 +61,21 @@ namespace UserWebApi.Models
     {
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Entity<RolePermissionEntity>().HasKey(t => new { t.RoleId, t.PermissionId });
-        //    modelBuilder.Entity<UserRoleEntity>().HasKey(t => new { t.UserId, t.RoleId });
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RolePermissionEntity>().HasKey(t => new { t.RoleId, t.PermissionId });
+            modelBuilder.Entity<UserRoleEntity>().HasKey(t => new { t.UserId, t.RoleId });
 
-        //    base.OnModelCreating(modelBuilder);
-        //}
+            modelBuilder.Entity<UserRoleEntity>().HasOne(u => u.User).WithMany(u => u.Roles).HasForeignKey(u => u.UserId);
+           // modelBuilder.Entity<RolePermissionEntity>().HasOne(u => u.UserRole).WithMany(u => u.Permissions).HasForeignKey(u => u.RoleId);
+
+            base.OnModelCreating(modelBuilder);
+        }
 
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<JwtTokenEntity> JwtTokenEntities { get; set; }
-        //public DbSet<UserRoleEntity> UserRoleEntities { get; set; }
-        //public DbSet<RolePermissionEntity> RolePermissionEntities { get; set; }
+        public DbSet<UserRoleEntity> UserRoleEntities { get; set; }
+        public DbSet<RolePermissionEntity> RolePermissionEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
         public DbSet<PermissionEntity> PermissionEntities { get; set; }
 

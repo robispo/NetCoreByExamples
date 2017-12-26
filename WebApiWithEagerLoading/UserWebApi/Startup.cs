@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UserWebApi.Models;
 using UserWebApi.Services;
@@ -52,6 +53,7 @@ namespace UserWebApi
             services.AddMvc()
                 .AddJsonOptions(opt =>
                 {
+                    opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     var resolver = opt.SerializerSettings.ContractResolver;
                     if (resolver != null)
                     {

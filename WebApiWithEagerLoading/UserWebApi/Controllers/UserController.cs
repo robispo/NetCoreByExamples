@@ -28,7 +28,7 @@ namespace UserWebApi.Controllers
                 _userContext.UserEntities//.Select(u => new { u, u.Roles, u.Roles.Select(r => r) })
                     .Include(u => u.Roles)
                         //.ThenInclude(r => r.Role)
-                        //.ThenInclude(p => p.)
+                          .ThenInclude(r => r.Permissions)                        
                     .FirstOrDefault(u => u.UserLogin == userLogin);
         }
 
