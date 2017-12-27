@@ -28,19 +28,21 @@ namespace UserWebApi.Models
 
         public UserEntity User { get; set; }
         public RoleEntity Role { get; set; }
-        public List<RolePermissionEntity> Permissions { get; set; }
     }
 
     public class RolePermissionEntity
     {
         public int RoleId { get; set; }
         public int PermissionId { get; set; }
+        public RoleEntity Role { get; set; }
+        public PermissionEntity Permission { get; set; }
     }
 
     public class RoleEntity
     {
         public int Id { get; set; }
         public string Role { get; set; }
+        public List<RolePermissionEntity> Permissions { get; set; }
     }
 
     public class PermissionEntity
@@ -67,7 +69,8 @@ namespace UserWebApi.Models
             modelBuilder.Entity<UserRoleEntity>().HasKey(t => new { t.UserId, t.RoleId });
 
             modelBuilder.Entity<UserRoleEntity>().HasOne(u => u.User).WithMany(u => u.Roles).HasForeignKey(u => u.UserId);
-           // modelBuilder.Entity<RolePermissionEntity>().HasOne(u => u.UserRole).WithMany(u => u.Permissions).HasForeignKey(u => u.RoleId);
+            modelBuilder.Entity<RolePermissionEntity>().HasOne(r => r.Role).WithMany(u => u.Permissions).HasForeignKey(u => u.RoleId);
+            modelBuilder.Entity<RolePermissionEntity>().HasOne(r => r.Permission);
 
             base.OnModelCreating(modelBuilder);
         }

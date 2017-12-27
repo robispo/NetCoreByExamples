@@ -154,7 +154,7 @@ namespace UserWebApi.Controllers
                     Id = 1,
                     UserLogin = "robispo",
                     Email = "rabelobispo@hotmail.com",
-                    Address = "Address",
+                    Address = "Address1",
                     FirstName = "Rabel",
                     LastName = "Obispo",
                     NickName = "robispo",
