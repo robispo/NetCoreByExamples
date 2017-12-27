@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.IO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,10 +72,21 @@ namespace UserWebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseValidateAndRenewToken();
             app.UseAuthentication();
-            app.UseMvc();
+
+            app.MapWhen(c => c.Request.Query.ContainsKey("with"), HandleMapWith);
+            app.UseMvc();            
+        }
+
+        private static void HandleMapWith(IApplicationBuilder app)
+        {
+            app.Use(async (context, next) =>
+            {                
+                await next.Invoke();
+            });
+
         }
     }
 }

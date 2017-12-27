@@ -112,3 +112,5 @@ services.AddAuthorization(options =>
 
 
 https://docs.microsoft.com/en-us/ef/core/querying/related-data
+https://www.billbogaiv.com/posts/using-aspnet-cores-middleware-to-modify-response-body
+https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware?tabs=aspnetcore2x

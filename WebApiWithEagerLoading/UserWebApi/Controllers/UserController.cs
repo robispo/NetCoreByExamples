@@ -25,7 +25,7 @@ namespace UserWebApi.Controllers
         public UserEntity GetUser(string userLogin)
         {
             return
-                _userContext.UserEntities//.Select(u => new { u, u.Roles, u.Roles.Select(r => r) })
+                _userContext.UserEntities
                     .Include(u => u.Roles)
                         .ThenInclude(r => r.Role)
                         .ThenInclude(r => r.Permissions)
