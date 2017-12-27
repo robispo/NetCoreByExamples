@@ -17,19 +17,21 @@ namespace UserWebApi.Controllers
         [HttpGet()]
         public IEnumerable<UserEntity> GetUserAll()
         {
+            IEnumerable<UserEntity> result;
+            result = _userContext.UserEntities.ToArray();
+
             return
-                _userContext.UserEntities.ToArray();
+                result;
         }
 
         [HttpGet("{userLogin}")]
         public UserEntity GetUser(string userLogin)
         {
+            var z = Request.Path.Value;
+
             return
                 _userContext.UserEntities
-                    .Include(u => u.Roles)
-                        .ThenInclude(r => r.Role)
-                        .ThenInclude(r => r.Permissions)
-                        .ThenInclude(r => r.Permission)
+                    //.Include("Roles.Role.Permissions.Permission")
                     .FirstOrDefault(u => u.UserLogin == userLogin);
         }
 

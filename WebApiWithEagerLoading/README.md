@@ -114,3 +114,5 @@ services.AddAuthorization(options =>
 https://docs.microsoft.com/en-us/ef/core/querying/related-data
 https://www.billbogaiv.com/posts/using-aspnet-cores-middleware-to-modify-response-body
 https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware?tabs=aspnetcore2x
+https://stackoverflow.com/questions/16054284/how-can-i-dynamically-add-include-to-objectsetentity-using-c
+https://tahirnaushad.com/2017/08/18/url-rewriting-in-asp-net-core/

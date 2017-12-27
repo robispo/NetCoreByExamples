@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,7 +52,6 @@ namespace UserWebApi
 
             services.AddSingleton<IAuthorizationHandler, BlacklistingJwtMiddlewareHandler>();
 
-
             services.AddMvc()
                 .AddJsonOptions(opt =>
                 {
@@ -62,31 +62,37 @@ namespace UserWebApi
                         var res = resolver as DefaultContractResolver;
                         res.NamingStrategy = new SnakeCaseNamingStrategy();  // <<!-- this removes the camelcasing
                     }
-                }); ;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            RewriteOptions rewriteOptions;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
+            rewriteOptions = new RewriteOptions()
+                .Add(new RewriteRule());
+            //    //.AddRewrite(@"^api/(\w+)(/)?(\w+)?(.*)", "api/eagerloading/index?entity=$1&id=$2&querystring=$3&a=$4&b=$5", skipRemainingRules: true);
+            //.AddRewrite(@"^api/users/robispowith=(\w+)", "api/eagerloading/index?entity=$1&id=$2&querystring=$3&a=$4&b=$5", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
+            app.UseRewriter(rewriteOptions);
+
             app.UseValidateAndRenewToken();
-            app.UseAuthentication();
-
-            app.MapWhen(c => c.Request.Query.ContainsKey("with"), HandleMapWith);
-            app.UseMvc();            
-        }
-
-        private static void HandleMapWith(IApplicationBuilder app)
-        {
-            app.Use(async (context, next) =>
-            {                
-                await next.Invoke();
-            });
-
-        }
+            app.UseAuthentication();            
+            app.UseMvc();
+            
+        }        
     }
 }
