@@ -61,20 +61,6 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }   
 ```
 
-```csharp
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-{
-    if (env.IsDevelopment())
-    {
-        app.UseDeveloperExceptionPage();
-    }
-
-    app.UseValidateAndRenewToken();
-    app.UseAuthentication();
-    app.UseMvc();
-}
-```
-
 3. This is the action that make the magic happen.
 
 * If you look I make a switch to match the entitymodel with the string entity that you looking for, that means that for every entity that you want to use in this way you need to come to the switch statement and add it.
