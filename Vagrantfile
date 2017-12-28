@@ -8,6 +8,7 @@ Vagrant.configure(2) do |config|
     config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
 
     # Synced folder
+    config.vm.synced_folder "./Provision", "/vagrant"
     config.vm.synced_folder "#{ENV['HOME']}/Dev/",
         "/data/sites",
         :owner => 'vagrant',
@@ -31,7 +32,15 @@ Vagrant.configure(2) do |config|
         sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
 
         sudo apt-get update
-        sudo apt-get install dotnet-sdk-2.0.3 -y
+        sudo apt-get install -y dotnet-sdk-2.0.3
+
+        apt-get update
+        apt-get install -y nginx
+        sudo apt-get clean
+
+        cat /vagrant/nginx/default-site > /etc/nginx/sites-available/default
+
+        service nginx restart
     SCRIPT
   
     config.vm.provision "shell", inline: $script
