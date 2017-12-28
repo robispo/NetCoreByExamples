@@ -17,4 +17,4 @@ jobs:
           command: cd HelloConsole
       - run:
           name: Build
-          command: dotnet build
+          command: pwd && ls && dotnet build
