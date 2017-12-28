@@ -7,14 +7,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Where are we?
-          command: pwd
+          name: Build HelloConsole
+          command: cd HelloConsole && dotnet build
       - run:
-          name: LS
-          command: ls
+          name: Build HelloWorld
+          command: cd HelloWorld/HelloWorld && dotnet build
       - run:
-          name: Enter the folder
-          command: cd HelloConsole
-      - run:
-          name: Build
-          command: pwd && ls && dotnet build
+          name: Build WebApi
+          command: cd WebApi/UserWebApi && dotnet build
