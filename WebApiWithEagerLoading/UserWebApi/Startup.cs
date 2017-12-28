@@ -77,16 +77,6 @@ namespace UserWebApi
 
             rewriteOptions = new RewriteOptions()
                 .Add(new RewriteRule());
-            //    //.AddRewrite(@"^api/(\w+)(/)?(\w+)?(.*)", "api/eagerloading/index?entity=$1&id=$2&querystring=$3&a=$4&b=$5", skipRemainingRules: true);
-            //.AddRewrite(@"^api/users/robispowith=(\w+)", "api/eagerloading/index?entity=$1&id=$2&querystring=$3&a=$4&b=$5", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
-            //.AddRewrite(@"^api/(\w+)(/)?(\w+)?", "api/eagerloading/index?entity=$1&id=$2", skipRemainingRules: true);
             app.UseRewriter(rewriteOptions);
 
             app.UseValidateAndRenewToken();
