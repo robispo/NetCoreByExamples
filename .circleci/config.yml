@@ -7,6 +7,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Where are we?
+          command: pwd
+      - run:
+          name: LS
+          command: ls
+      - run:
           name: Enter the folder
           command: cd HelloConsole
       - run:
