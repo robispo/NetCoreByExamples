@@ -11,12 +11,12 @@ namespace UserWebApi.Services
 {
     public class BlacklistingJwtMiddleware : IAuthorizationRequirement
     {
-        UserContext _userContext;
+        DataBaseELContext _userContext;
         IConfiguration _configuration;
         readonly string _tokenName, _applyGracePeriod;
         readonly int _gracePeriod;
 
-        public BlacklistingJwtMiddleware(UserContext userContext, IConfiguration configuration)
+        public BlacklistingJwtMiddleware(DataBaseELContext userContext, IConfiguration configuration)
         {
             _userContext = userContext;
             _configuration = configuration;

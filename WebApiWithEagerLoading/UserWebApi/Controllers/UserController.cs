@@ -11,14 +11,14 @@ namespace UserWebApi.Controllers
     [Route("api/users")] //Url http://{domain}/api/users
     public class UserController : BaseController
     {
-        public UserController(UserContext userContext, IJwtService jwtService) : base(userContext, jwtService) { }
+        public UserController(DataBaseELContext dataBaseELContext, IJwtService jwtService) : base(dataBaseELContext, jwtService) { }
 
 
         [HttpGet()]
         public IEnumerable<UserEntity> GetUserAll()
         {
             IEnumerable<UserEntity> result;
-            result = _userContext.UserEntities.ToArray();
+            result = _dataBaseELContext.UserEntities.ToArray();
 
             return
                 result;
@@ -30,8 +30,7 @@ namespace UserWebApi.Controllers
             var z = Request.Path.Value;
 
             return
-                _userContext.UserEntities
-                    //.Include("Roles.Role.Permissions.Permission")
+                _dataBaseELContext.UserEntities
                     .FirstOrDefault(u => u.UserLogin == userLogin);
         }
 
@@ -42,10 +41,10 @@ namespace UserWebApi.Controllers
 
             try
             {
-                user.Id = _userContext.UserEntities.Count() + 1;
-                _userContext.UserEntities.Add(user);
-                _userContext.SaveChanges();
-                result = _userContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
+                user.Id = _dataBaseELContext.UserEntities.Count() + 1;
+                _dataBaseELContext.UserEntities.Add(user);
+                _dataBaseELContext.SaveChanges();
+                result = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
 
                 return
                     Ok(result);
@@ -64,11 +63,11 @@ namespace UserWebApi.Controllers
 
             try
             {
-                if (_userContext.UserEntities.Any(u => u.Id == user.Id))
+                if (_dataBaseELContext.UserEntities.Any(u => u.Id == user.Id))
                 {
-                    _userContext.UserEntities.Update(user);
-                    _userContext.SaveChanges();
-                    result = _userContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
+                    _dataBaseELContext.UserEntities.Update(user);
+                    _dataBaseELContext.SaveChanges();
+                    result = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
 
                     return
                         Ok(result);
@@ -93,11 +92,11 @@ namespace UserWebApi.Controllers
 
             try
             {
-                if (_userContext.UserEntities.Any(u => u.UserLogin == userLogin))
+                if (_dataBaseELContext.UserEntities.Any(u => u.UserLogin == userLogin))
                 {
-                    result = _userContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
-                    _userContext.UserEntities.Remove(result);
-                    _userContext.SaveChanges();
+                    result = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
+                    _dataBaseELContext.UserEntities.Remove(result);
+                    _dataBaseELContext.SaveChanges();
 
                     return
                         Ok(result);

@@ -37,17 +37,17 @@ namespace UserWebApi
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => jwtService.RulesTokenValidation(options));
 
-            DbContextOptions<UserContext> dbOptions;
-            DbContextOptionsBuilder<UserContext> dboBuilder = new DbContextOptionsBuilder<UserContext>();
+            DbContextOptions<DataBaseELContext> dbOptions;
+            DbContextOptionsBuilder<DataBaseELContext> dboBuilder = new DbContextOptionsBuilder<DataBaseELContext>();
             dboBuilder.UseInMemoryDatabase("WebapiTest");
             dbOptions = dboBuilder.Options;
 
-            services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
+            services.AddDbContext<DataBaseELContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
-                options.AddPolicy("BlacklistingJwt", policy => policy.Requirements.Add(new BlacklistingJwtMiddleware(new UserContext(dbOptions), Configuration)));
+                options.AddPolicy("BlacklistingJwt", policy => policy.Requirements.Add(new BlacklistingJwtMiddleware(new DataBaseELContext(dbOptions), Configuration)));
             });
 
             services.AddSingleton<IAuthorizationHandler, BlacklistingJwtMiddlewareHandler>();
@@ -81,8 +81,7 @@ namespace UserWebApi
 
             app.UseValidateAndRenewToken();
             app.UseAuthentication();            
-            app.UseMvc();
-            
+            app.UseMvc();            
         }        
     }
 }

@@ -10,34 +10,34 @@ namespace UserWebApi.Controllers
     [Produces("application/json")]
     public class BaseController : Controller
     {
-        protected readonly UserContext _userContext;
+        protected readonly DataBaseELContext _dataBaseELContext;
         protected readonly IJwtService _jwtService;
 
-        public BaseController(UserContext userContext, IJwtService jwtService)
+        public BaseController(DataBaseELContext dataBaseELContext, IJwtService jwtService)
         {
-            _userContext = userContext;
+            _dataBaseELContext = dataBaseELContext;
             _jwtService = jwtService;
             this.DefaultAdd();
         }
 
         private void DefaultAdd()
         {
-            if (_userContext.UserEntities.Count() == 0)
+            if (_dataBaseELContext.UserEntities.Count() == 0)
             {
                 #region Role
-                _userContext.RoleEntities.Add(new RoleEntity
+                _dataBaseELContext.RoleEntities.Add(new RoleEntity
                 {
                     Id = 1,
                     Role = "Adminstrator"
                 });
 
-                _userContext.RoleEntities.Add(new RoleEntity
+                _dataBaseELContext.RoleEntities.Add(new RoleEntity
                 {
                     Id = 2,
                     Role = "User"
                 });
 
-                _userContext.RoleEntities.Add(new RoleEntity
+                _dataBaseELContext.RoleEntities.Add(new RoleEntity
                 {
                     Id = 3,
                     Role = "Supervisor"
@@ -45,29 +45,29 @@ namespace UserWebApi.Controllers
                 #endregion
 
                 #region Permission
-                _userContext.PermissionEntities.Add(new PermissionEntity
+                _dataBaseELContext.PermissionEntities.Add(new PermissionEntity
                 {
                     Id = 1,
                     Permission = "CreateUser"
                 });
 
-                _userContext.PermissionEntities.Add(new PermissionEntity
+                _dataBaseELContext.PermissionEntities.Add(new PermissionEntity
                 {
                     Id = 2,
                     Permission = "ReadUser"
                 });
 
-                _userContext.PermissionEntities.Add(new PermissionEntity
+                _dataBaseELContext.PermissionEntities.Add(new PermissionEntity
                 {
                     Id = 3,
                     Permission = "UpdateUser"
                 });
-                _userContext.PermissionEntities.Add(new PermissionEntity
+                _dataBaseELContext.PermissionEntities.Add(new PermissionEntity
                 {
                     Id = 4,
                     Permission = "DeleteUser"
                 });
-                _userContext.PermissionEntities.Add(new PermissionEntity
+                _dataBaseELContext.PermissionEntities.Add(new PermissionEntity
                 {
                     Id = 5,
                     Permission = "ApproveUser"
@@ -75,49 +75,49 @@ namespace UserWebApi.Controllers
                 #endregion
 
                 #region RolePermission
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 1,
                     PermissionId = 1,
                     // Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 1)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 1,
                     PermissionId = 2,
                     // Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 2)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 1,
                     PermissionId = 3,
                     //  Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 3)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 1,
                     PermissionId = 4,
                     // Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 4)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 1,
                     PermissionId = 5,
                     //  Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 5)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 2,
                     PermissionId = 2,
                     //Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 2)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 3,
                     PermissionId = 2,
                     //  Permission = _userContext.PermissionEntities.FirstOrDefault(p => p.Id == 2)
                 });
-                _userContext.RolePermissionEntities.Add(new RolePermissionEntity
+                _dataBaseELContext.RolePermissionEntities.Add(new RolePermissionEntity
                 {
                     RoleId = 3,
                     PermissionId = 5,
@@ -126,22 +126,22 @@ namespace UserWebApi.Controllers
                 #endregion
 
                 #region UserRole
-                _userContext.UserRoleEntities.Add(new UserRoleEntity
+                _dataBaseELContext.UserRoleEntities.Add(new UserRoleEntity
                 {
                     UserId = 1,
                     RoleId = 1,
                 });
-                _userContext.UserRoleEntities.Add(new UserRoleEntity
+                _dataBaseELContext.UserRoleEntities.Add(new UserRoleEntity
                 {
                     UserId = 2,
                     RoleId = 2,
                 });
-                _userContext.UserRoleEntities.Add(new UserRoleEntity
+                _dataBaseELContext.UserRoleEntities.Add(new UserRoleEntity
                 {
                     UserId = 2,
                     RoleId = 3,
                 });
-                _userContext.UserRoleEntities.Add(new UserRoleEntity
+                _dataBaseELContext.UserRoleEntities.Add(new UserRoleEntity
                 {
                     UserId = 3,
                     RoleId = 2,
@@ -149,7 +149,7 @@ namespace UserWebApi.Controllers
                 #endregion
 
                 #region User
-                _userContext.UserEntities.Add(new UserEntity
+                _dataBaseELContext.UserEntities.Add(new UserEntity
                 {
                     Id = 1,
                     UserLogin = "robispo",
@@ -162,7 +162,7 @@ namespace UserWebApi.Controllers
                     //Roles = new RoleEntity[] { new RoleEntity { Id = 1, Role = "Adminstrator", Permissions = new PermissionEntity[] { new PermissionEntity { Id = 1, Permission = "CreateUser" } } } }
                 });
 
-                _userContext.UserEntities.Add(new UserEntity
+                _dataBaseELContext.UserEntities.Add(new UserEntity
                 {
                     Id = 2,
                     UserLogin = "jperez",
@@ -175,7 +175,7 @@ namespace UserWebApi.Controllers
                     //Roles = new UserRoleEntity[] { new UserRoleEntity { UserId = 2, RoleId = 3 }, new UserRoleEntity { UserId = 2, RoleId = 2 } }
                 });
 
-                _userContext.UserEntities.Add(new UserEntity
+                _dataBaseELContext.UserEntities.Add(new UserEntity
                 {
                     Id = 3,
                     UserLogin = "jdeleon",
@@ -230,7 +230,7 @@ namespace UserWebApi.Controllers
                 });*/
                 #endregion
 
-                _userContext.SaveChanges();
+                _dataBaseELContext.SaveChanges();
             }
         }
     }

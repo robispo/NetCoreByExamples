@@ -1,73 +1,64 @@
 # Webapi
 
-* This is the "Webapi of user SimpleLogin" of the other example, but now we add blacklistingToken.
-* This is something of our own because we did not find any example a the moment of this kind of implementation.
-* In every request that is make (after you are authenticated) the jwt token is renew and send back into the header, after you use a token is blacklisted and you can not use it again.
-* We implemented a grace-period too, why? In case that you are making requests to fast you get the change of change, we let a window of ten seconds in this example. 
+* This is the "Webapi of user blacklistingToken" of the other example, but now we add eagerloading.
+* We add the eagerloading concep base on the url with the key-word **with**, if you use this key-word you are rewrite to another controller action that make the eagerloading.
+* We use the Microsoft rewrite middleware and implemented our own rule to do so.
+* Inside of the action after the rewrite, I can find a way to set the model entity base on the url because Set method does not return a generic type, if someone knows a better way to do it, please, show me how.
 
-## Steps
+## Example
 
-1. Create a method that renew the token (Only if you are autenticated and it is a valid token).
+* This url will return all user **http://localhost:8610/api/users** in you look the property call **roles** is null.
+* This url will return a specific user **http://localhost:8610/api/users/robispo** in you look the property call **roles** is null.
+* If you add a querystring like this **?with=roles.role.permissions.permission** to any of the above urls will fill with eagerloading the dependency.
+* You can take out and only load one entity, **example:** I only want the roles ids i do not need the description you can do it like **?with=roles.**.
+* But if you need the the dependency you can not take out the parent, **example:** **?with=roles.role.permission**
+
+## Code
+
+1. Create rule to rewrite, if the key-word **with** is in the querystring rewrite the url only on server-side.
 
 ```csharp
-public void ValidateAndRenewToken(HttpContext context)
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
+
+namespace UserWebApi.Services
 {
-    string auth;
-    SecurityToken validatedToken;
-    ClaimsPrincipal claimsPrincipal;
-    IEnumerable<Claim> claims;
-
-    auth = context.Request.Headers[_tokenName];
-
-    if (!string.IsNullOrWhiteSpace(auth))
+    public class RewriteRule : IRule
     {
-        auth = auth.Replace(_baererph, string.Empty);
-
-        if (_tokenHandler.CanReadToken(auth))
+        public void ApplyRule(RewriteContext context)
         {
-            try
+            string[] blocks;
+            QueryString queryString;
+
+            if (context.HttpContext.Request.Query.ContainsKey("with"))
             {
-                claimsPrincipal = _tokenHandler.ValidateToken(auth, _tokenValidationParameters, out validatedToken);
-                claims = claimsPrincipal.Claims.Where(c => !_registeredClaimUse.Contains(c.Type));
-                this.GenerateToken(context, claims);
-            }
-            catch (Exception)
-            {
+                blocks = context.HttpContext.Request.Path.Value.Split("/");
+
+                queryString = new QueryString()
+                                    .Add("entity", blocks[2])
+                                    .Add("id", blocks.Length > 3 ? blocks[3] : string.Empty)
+                                    .Add("with", context.HttpContext.Request.Query["with"]);
+
+                context.HttpContext.Request.QueryString = queryString;
+                context.HttpContext.Request.Path = "/api/eagerloading/index";
             }
         }
     }
 }
+
 ```
 
-2. Create a middleware to renew the token on all request and implemente at **Configure**.
+2. Implementing the rule at **Configure**. **Note:** the implementation must be before **app.UseMvc();** in order to work.
 
 ```csharp
-public class JwtMiddleware
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {
-    readonly RequestDelegate _next;
+    RewriteOptions rewriteOptions;
 
-    public JwtMiddleware(RequestDelegate next)
-    {
-        _next = next;
-    }
-
-    public Task Invoke(HttpContext context, IJwtService jwtService)
-    {
-        jwtService.ValidateAndRenewToken(context);
-        
-        return 
-            this._next(context);
-    }
-}
-
-public static class JwtMiddlewareExtensions
-{
-    public static IApplicationBuilder UseValidateAndRenewToken(this IApplicationBuilder builder)
-    {
-        return 
-        	builder.UseMiddleware<JwtMiddleware>();
-    }
-}
+    rewriteOptions = new RewriteOptions()
+        .Add(new RewriteRule());
+    app.UseRewriter(rewriteOptions);           
+}   
 ```
 
 ```csharp
@@ -84,35 +75,97 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
-3. Create a **IAuthorizationRequirement** that allow you to manipulate the request before to get pass to the controller action.
+3. This is the action that make the magic happen.
+
+* If you look I make a switch to match the entitymodel with the string entity that you looking for, that means that for every entity that you want to use in this way you need to come to the switch statement and add it.
+* Sorry! But I could not find another way.
 
 ```csharp
-public class BlacklistingJwtMiddleware : IAuthorizationRequirement
-```
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using UserWebApi.Models;
+using UserWebApi.Services;
 
-```csharp
-public class BlacklistingJwtMiddlewareHandler : AuthorizationHandler<BlacklistingJwtMiddleware>
-```
-
-4. In the **ConfigureServices** in the **AddAuthorization** block add a **Requirements**, this requirement will use EntityFrameword to save the token in memory and do not allow to use it again (Use the configuration to find static values this is use to know the grace period).
-
-```csharp
-services.AddAuthorization(options =>
+namespace UserWebApi.Controllers
 {
-    options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
-    options.AddPolicy("BlacklistingJwt", policy => policy.Requirements.Add(new BlacklistingJwtMiddleware(new UserContext(dbOptions), Configuration)));
-});
+    public class EagerLoadingController : BaseController
+    {
+        public EagerLoadingController(DataBaseELContext dataBaseELContext, IJwtService jwtService) : base(dataBaseELContext, jwtService) { }
+
+        [HttpGet("Index")]
+        public IActionResult Index(string entity, string id, string with)
+        {
+            object result;
+            string[] withParse;
+
+            try
+            {
+                withParse = this.ParseWith(with);
+                switch (entity)
+                {
+                    case "users":
+                        IQueryable<UserEntity> dbSet;
+                        dbSet = _dataBaseELContext.UserEntities;
+
+                        for (int i = 0; i < withParse.Length; i++)
+                            dbSet = dbSet.Include(withParse[i]);
+
+                        if (!string.IsNullOrWhiteSpace(id))
+                            result = dbSet.FirstOrDefault(u => u.UserLogin == id);
+                        else
+                            result = dbSet.Select(u => u).ToArray();
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
+
+                return
+                   Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return
+                    BadRequest(new { ex.Message });
+            }
+        }
+
+        private string[] ParseWith(string with)
+        {
+            string[] includes, thenincludes;
+            CultureInfo cultureInfo;
+            TextInfo textInfo;
+
+            cultureInfo = Thread.CurrentThread.CurrentCulture;
+            textInfo = cultureInfo.TextInfo;
+
+            includes = with.Split(",");
+
+            for (int i = 0; i < includes.Length; i++)
+            {
+                thenincludes = includes[i].Split(".");
+
+                for (int j = 0; j < thenincludes.Length; j++)
+                    thenincludes[j] = textInfo.ToTitleCase(thenincludes[j]);
+
+                includes[i] = string.Join(".", thenincludes);
+            }
+
+            return
+                includes;
+        }
+    }
+}
 ```
 
-5. Force **Authorize** to ask for you requirement.
+## Support Links
 
-```csharp
-[Authorize(Policy = "BlacklistingJwt")]
-```
-
-
-https://docs.microsoft.com/en-us/ef/core/querying/related-data
-https://www.billbogaiv.com/posts/using-aspnet-cores-middleware-to-modify-response-body
-https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware?tabs=aspnetcore2x
-https://stackoverflow.com/questions/16054284/how-can-i-dynamically-add-include-to-objectsetentity-using-c
-https://tahirnaushad.com/2017/08/18/url-rewriting-in-asp-net-core/
+1. [Loading Related Data](https://docs.microsoft.com/en-us/ef/core/querying/related-data)
+2. [Using ASP.NET Core's middleware to modify response body](https://www.billbogaiv.com/posts/using-aspnet-cores-middleware-to-modify-response-body)
+3. [ASP.NET Core Middleware Fundamentals](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware?tabs=aspnetcore2x)
+4. [How can I dynamically add Include to ObjectSet<Entity> using C#?](https://stackoverflow.com/questions/16054284/how-can-i-dynamically-add-include-to-objectsetentity-using-c)
+5. [ASP.NET CORE 2.0 URL REWRITING (Rule)](https://tahirnaushad.com/2017/08/18/url-rewriting-in-asp-net-core/)

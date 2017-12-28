@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace UserWebApi.Models
 {
@@ -59,9 +60,9 @@ namespace UserWebApi.Models
 
     }
 
-    public class UserContext : DbContext
+    public class DataBaseELContext : DbContext
     {
-        public UserContext(DbContextOptions<UserContext> options) : base(options) { }
+        public DataBaseELContext(DbContextOptions<DataBaseELContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,6 +82,5 @@ namespace UserWebApi.Models
         public DbSet<RolePermissionEntity> RolePermissionEntities { get; set; }
         public DbSet<RoleEntity> RoleEntities { get; set; }
         public DbSet<PermissionEntity> PermissionEntities { get; set; }
-
     }
 }
