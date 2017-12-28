@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: microsoft/dotnet:2.0.4-sdk-2.1.3-jessie
+    steps:
+      - checkout
+      - run:
+          name: Enter the folder
+          command: cd HelloConsole
+      - run:
+          name: Build
+          command: dotnet build
