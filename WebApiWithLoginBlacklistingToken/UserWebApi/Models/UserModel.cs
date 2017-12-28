@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserWebApi.Models
 {
@@ -14,10 +15,20 @@ namespace UserWebApi.Models
         public string Password { get; set; }        
     }
 
+    public class JwtTokenEntity
+    {
+        public int Id { get; set; }
+        public string Token { get; set; }
+        public DateTime CreateDate { get; set; }
+
+    }
+
     public class UserContext : DbContext
     {
         public UserContext(DbContextOptions<UserContext> options) : base(options) { }
 
         public DbSet<UserEntity> UserEntities { get; set; }
+        public DbSet<JwtTokenEntity> JwtTokenEntities { get; set; }
+
     }
 }
