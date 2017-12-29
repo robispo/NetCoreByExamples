@@ -82,7 +82,7 @@ namespace UserWebApi.UnitTest
             Assert.AreEqual(objectResult.StatusCode.Value, (int)HttpStatusCode.BadRequest);
         }
 
-        /*[TestMethod]
+        [TestMethod]
         public void GetUserWithEagerLoading()
         {
             HttpResponseMessage response = TestUserWithEagerLoading().Result;
@@ -104,6 +104,6 @@ namespace UserWebApi.UnitTest
                         response;
                 }
             }
-        }*/
+        }
     }
 }
