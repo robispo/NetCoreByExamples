@@ -13,14 +13,14 @@ namespace UserWebApi.Controllers
     [Route("api/auth")]
     public class AuthController : BaseController
     {
-        public AuthController(UserContext userContext, IJwtService jwtService) : base(userContext, jwtService) { }
+        public AuthController(DataBaseELContext dataBaseELContext, IJwtService jwtService) : base(dataBaseELContext, jwtService) { }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult LogIn([FromBody]AuthModel authModel)
         {
             // This is the code that validate the user, this is upto you, this is only example test.
-            if (authModel != null && _userContext.UserEntities.Any(u => u.UserLogin == authModel.UserName && u.Password == authModel.Password))
+            if (authModel != null && _dataBaseELContext.UserEntities.Any(u => u.UserLogin == authModel.UserName && u.Password == authModel.Password))
             {
                 IEnumerable<Claim> claims;
                 claims = authModel.UserName == "robispo"

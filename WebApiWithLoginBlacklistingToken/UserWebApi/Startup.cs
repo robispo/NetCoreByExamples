@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,12 +33,21 @@ namespace UserWebApi
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => jwtService.RulesTokenValidation(options));
 
+            DbContextOptions<UserContext> dbOptions;
+            DbContextOptionsBuilder<UserContext> dboBuilder = new DbContextOptionsBuilder<UserContext>();
+            dboBuilder.UseInMemoryDatabase("WebapiTest");
+            dbOptions = dboBuilder.Options;
+
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("WebapiTest"));
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminTest", policy => policy.RequireClaim("SuperTester", "true"));
+                options.AddPolicy("BlacklistingJwt", policy => policy.Requirements.Add(new BlacklistingJwtMiddleware(new UserContext(dbOptions), Configuration)));
             });
+
+            services.AddSingleton<IAuthorizationHandler, BlacklistingJwtMiddlewareHandler>();
+
 
             services.AddMvc()
                 .AddJsonOptions(opt =>
@@ -46,7 +56,7 @@ namespace UserWebApi
                     if (resolver != null)
                     {
                         var res = resolver as DefaultContractResolver;
-                        res.NamingStrategy = new SnakeCaseNamingStrategy();
+                        res.NamingStrategy = new SnakeCaseNamingStrategy();  // <<!-- this removes the camelcasing
                     }
                 }); ;
         }
@@ -59,6 +69,7 @@ namespace UserWebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseValidateAndRenewToken();
             app.UseAuthentication();
             app.UseMvc();
         }

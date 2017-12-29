@@ -4,9 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +15,7 @@ namespace UserWebApi.Services
     {
         void GenerateToken(HttpContext context, IEnumerable<Claim> claims);
         void RulesTokenValidation(JwtBearerOptions jwtBearerOptions);
+        void ValidateAndRenewToken(HttpContext context);
     }
     public class JwtService : IJwtService
     {
@@ -26,6 +25,7 @@ namespace UserWebApi.Services
         TokenValidationParameters _tokenValidationParameters;
         IConfiguration _configuration;
         readonly string _baererph, _tokenName, _securityKey, _domain;
+        readonly IEnumerable<string> _registeredClaimUse;
 
         public JwtService(IConfiguration configuration)
         {
@@ -37,6 +37,7 @@ namespace UserWebApi.Services
             _tokenHandler = new JwtSecurityTokenHandler();
             _baererph = "Bearer ";
             _tokenName = "Authorization";
+            _registeredClaimUse = new string[] { "iss", "exp", "aud" };
 
             _tokenValidationParameters = new TokenValidationParameters
             {
@@ -46,7 +47,9 @@ namespace UserWebApi.Services
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _domain,
                 ValidAudience = _domain,
-                IssuerSigningKey = _key
+                IssuerSigningKey = _key,
+                SaveSigninToken = true,
+                ClockSkew = new TimeSpan(0, 0, 10)
             };
         }
 
@@ -73,6 +76,32 @@ namespace UserWebApi.Services
             options.TokenValidationParameters = _tokenValidationParameters;
         }
 
-     
+        public void ValidateAndRenewToken(HttpContext context)
+        {
+            string auth;
+            SecurityToken validatedToken;
+            ClaimsPrincipal claimsPrincipal;
+            IEnumerable<Claim> claims;
+
+            auth = context.Request.Headers[_tokenName];
+
+            if (!string.IsNullOrWhiteSpace(auth))
+            {
+                auth = auth.Replace(_baererph, string.Empty);
+
+                if (_tokenHandler.CanReadToken(auth))
+                {
+                    try
+                    {
+                        claimsPrincipal = _tokenHandler.ValidateToken(auth, _tokenValidationParameters, out validatedToken);
+                        claims = claimsPrincipal.Claims.Where(c => !_registeredClaimUse.Contains(c.Type));
+                        this.GenerateToken(context, claims);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+        }
     }
 }

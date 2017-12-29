@@ -1,19 +1,8 @@
 {
-    "iisSettings": {
-        "windowsAuthentication": false,
-        "anonymousAuthentication": true,
-        "iisExpress": {
-            "applicationUrl": "http://localhost:8610/",
-            "sslPort": 0
-        }
-    },
     "profiles": {
-        "IIS Express": {
-            "commandName": "IISExpress",
-            "launchBrowser": true,
-            "launchUrl": "api/auth/test",
+        "UserWebApi.UnitTest": {
+            "commandName": "Project",
             "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
                 "securityKey": "SecurityKeySecurityKey",
                 "domain": "localhost"
             }
@@ -21,11 +10,13 @@
         "UserWebApi": {
             "commandName": "Project",
             "launchBrowser": true,
-            "launchUrl": "api/auth/test",
+            "launchUrl": "api/users",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "securityKey": "SecurityKeySecurityKey",
-                "domain": "localhost"
+                "domain": "localhost",
+                "applyGracePeriod": "true",
+                "gracePeriod": "10" /*Time in seconds*/
             },
             "applicationUrl": "http://localhost:8611/"
         }

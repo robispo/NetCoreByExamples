@@ -11,21 +11,25 @@
         "IIS Express": {
             "commandName": "IISExpress",
             "launchBrowser": true,
-            "launchUrl": "api/auth/test",
+            "launchUrl": "api/users",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "securityKey": "SecurityKeySecurityKey",
-                "domain": "localhost"
+                "domain": "localhost",
+                "applyGracePeriod": "true",
+                "gracePeriod": "10" /*Time in seconds*/
             }
         },
         "UserWebApi": {
             "commandName": "Project",
             "launchBrowser": true,
-            "launchUrl": "api/auth/test",
+            "launchUrl": "api/users",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "securityKey": "SecurityKeySecurityKey",
-                "domain": "localhost"
+                "domain": "localhost",
+                "applyGracePeriod": "true",
+                "gracePeriod": "10" /*Time in seconds*/
             },
             "applicationUrl": "http://localhost:8611/"
         }
