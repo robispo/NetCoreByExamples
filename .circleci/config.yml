@@ -25,11 +25,11 @@ jobs:
           name: Build WebApiWithEagerLoading
           command: cd WebApiWithEagerLoading/UserWebApi && dotnet build
       - run:
-          name: Build WebApi
+          name: Build WebApiUnitTest WebApi
           command: cd WebApiUnitTest/UserWebApi && dotnet build
       - run:
-          name: Build WebApi
+          name: Build UnitTest
           command: cd WebApiUnitTest/UserWebApi.UnitTest && dotnet build
       - run:
-          name: Build WebApi
+          name: Test WebApiUnitTest
           command: cd WebApiUnitTest/UserWebApi.UnitTest && dotnet test
