@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/project
+    docker:
+      - image: microsoft/dotnet:2.0.4-sdk-2.1.3-jessie
+    steps:
+      - checkout
+      - run:
+          name: Build HelloConsole
+          command: cd HelloConsole && dotnet build
+      - run:
+          name: Build HelloWorld
+          command: cd HelloWorld/HelloWorld && dotnet build
+      - run:
+          name: Build WebApi
+          command: cd WebApi/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiWithSimpleLogin
+          command: cd WebApiWithSimpleLogin/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiWithLoginBlacklistingToken
+          command: cd WebApiWithLoginBlacklistingToken/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiWithEagerLoading
+          command: cd WebApiWithEagerLoading/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiUnitTest WebApi
+          command: cd WebApiUnitTest/UserWebApi && dotnet build
+      - run:
+          name: Build UnitTest
+          command: cd WebApiUnitTest/UserWebApi.UnitTest && dotnet build
+      - run:
+          name: Test WebApiUnitTest
+          command: cd WebApiUnitTest/UserWebApi.UnitTest && dotnet test
