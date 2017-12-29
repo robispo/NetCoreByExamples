@@ -1,0 +1,24 @@
+{
+    "profiles": {
+        "UserWebApi.UnitTest": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "securityKey": "SecurityKeySecurityKey",
+                "domain": "localhost"
+            }
+        },
+        "UserWebApi": {
+            "commandName": "Project",
+            "launchBrowser": true,
+            "launchUrl": "api/users",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "securityKey": "SecurityKeySecurityKey",
+                "domain": "localhost",
+                "applyGracePeriod": "true",
+                "gracePeriod": "10" /*Time in seconds*/
+            },
+            "applicationUrl": "http://localhost:8611/"
+        }
+    }
+}
