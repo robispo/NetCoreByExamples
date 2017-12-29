@@ -80,6 +80,7 @@ namespace UserWebApi.UnitTest
             Assert.IsNotNull(objectResult.StatusCode);
 
             Assert.AreEqual(objectResult.StatusCode.Value, (int)HttpStatusCode.BadRequest);
+            Assert.AreEqual(objectResult.StatusCode.Value, (int)HttpStatusCode.BadRequest);
         }
 
         //[TestMethod]
