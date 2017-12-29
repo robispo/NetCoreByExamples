@@ -82,27 +82,15 @@ namespace UserWebApi.UnitTest
             Assert.AreEqual(objectResult.StatusCode.Value, (int)HttpStatusCode.BadRequest);
         }
 
-        [TestMethod]
+        /*[TestMethod]
         public void GetUserWithEagerLoading()
         {
+            HttpResponseMessage response = TestUserWithEagerLoading().Result;
 
-            //var builder = new HttpRequestBuilder()
-            //                    .AddMethod(HttpMethod.Get)
-            //                    .AddRequestUri(requestUri);
-
-            //return await builder.SendAsync();
-
-
-            
-
-            //tResponse.Start();
-            //response = tResponse.Result;
-
-            Assert.AreEqual(Response.StatusCode, HttpStatusCode.OK);
-
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
         }
 
-        public static string TestWebApiUrl()
+        public async Task<HttpResponseMessage>  TestUserWithEagerLoading()
         {
             using (HttpClient client = new HttpClient())
             {
@@ -112,14 +100,10 @@ namespace UserWebApi.UnitTest
 
                 using (HttpResponseMessage response = await client.GetAsync("api/users/robispo?with=Roles"))
                 {
-
+                    return
+                        response;
                 }
-
             }
-
-
-            return
-                string.Empty;
-        }
+        }*/
     }
 }
