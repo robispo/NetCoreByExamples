@@ -15,3 +15,21 @@ jobs:
       - run:
           name: Build WebApi
           command: cd WebApi/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiWithSimpleLogin
+          command: cd WebApiWithSimpleLogin/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiWithLoginBlacklistingToken
+          command: cd WebApiWithLoginBlacklistingToken/UserWebApi && dotnet build
+      - run:
+          name: Build WebApiWithEagerLoading
+          command: cd WebApiWithEagerLoading/UserWebApi && dotnet build
+      - run:
+          name: Build WebApi
+          command: cd WebApiUnitTest/UserWebApi && dotnet build
+      - run:
+          name: Build WebApi
+          command: cd WebApiUnitTest/UserWebApi.UnitTest && dotnet build
+      - run:
+          name: Build WebApi
+          command: cd WebApiUnitTest/UserWebApi.UnitTest && dotnet test
