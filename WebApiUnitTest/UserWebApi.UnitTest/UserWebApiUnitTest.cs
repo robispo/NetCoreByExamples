@@ -82,28 +82,28 @@ namespace UserWebApi.UnitTest
             Assert.AreEqual(objectResult.StatusCode.Value, (int)HttpStatusCode.BadRequest);
         }
 
-        [TestMethod]
-        public void GetUserWithEagerLoading()
-        {
-            HttpResponseMessage response = TestUserWithEagerLoading().Result;
+        //[TestMethod]
+        //public void GetUserWithEagerLoading()
+        //{
+        //    HttpResponseMessage response = TestUserWithEagerLoading().Result;
 
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
-        }
+        //    Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+        //}
 
-        public async Task<HttpResponseMessage>  TestUserWithEagerLoading()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:8610/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //public async Task<HttpResponseMessage>  TestUserWithEagerLoading()
+        //{
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri("http://localhost:8610/");
+        //        client.DefaultRequestHeaders.Accept.Clear();
+        //        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                using (HttpResponseMessage response = await client.GetAsync("api/users/robispo?with=Roles"))
-                {
-                    return
-                        response;
-                }
-            }
-        }
+        //        using (HttpResponseMessage response = await client.GetAsync("api/users/robispo?with=Roles"))
+        //        {
+        //            return
+        //                response;
+        //        }
+        //    }
+        //}
     }
 }
