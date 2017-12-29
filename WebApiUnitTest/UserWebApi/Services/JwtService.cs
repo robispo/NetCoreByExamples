@@ -23,15 +23,13 @@ namespace UserWebApi.Services
         SigningCredentials _creds;
         JwtSecurityTokenHandler _tokenHandler;
         TokenValidationParameters _tokenValidationParameters;
-        IConfiguration _configuration;
         readonly string _baererph, _tokenName, _securityKey, _domain;
         readonly IEnumerable<string> _registeredClaimUse;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService()
         {
-            _configuration = configuration;
-            _securityKey = _configuration["securityKey"];
-            _domain = _configuration["domain"];
+            _securityKey = Environment.GetEnvironmentVariable("securityKey") ?? "SecurityKeySecurityKey";
+            _domain = Environment.GetEnvironmentVariable("domain") ?? "localhost";
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_securityKey));
             _creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
             _tokenHandler = new JwtSecurityTokenHandler();
@@ -60,11 +58,11 @@ namespace UserWebApi.Services
 
             token = new JwtSecurityToken
             (
-                issuer : _domain,
-                audience : _domain,
-                claims : claims,
-                expires : DateTime.Now.AddMinutes(30),
-                signingCredentials : _creds
+                issuer: _domain,
+                audience: _domain,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: _creds
             );
 
             tokenValue = _tokenHandler.WriteToken(token);

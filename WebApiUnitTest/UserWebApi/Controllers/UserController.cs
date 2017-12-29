@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using UserWebApi.Models;
 using UserWebApi.Services;
 
@@ -10,21 +9,33 @@ namespace UserWebApi.Controllers
     [Route("api/users")] //Url http://{domain}/api/users
     public class UserController : BaseController
     {
-        public UserController(UserContext userContext, IJwtService jwtService) : base(userContext, jwtService) { }
+        public UserController(DataBaseELContext dataBaseELContext, IJwtService jwtService) : base(dataBaseELContext, jwtService) { }
 
 
         [HttpGet()]
-        public IEnumerable<UserEntity> GetUserAll()
+        public IActionResult GetUserAll()
         {
             return
-                _userContext.UserEntities.ToArray();
+                Ok(_dataBaseELContext.UserEntities.ToArray());
         }
 
         [HttpGet("{userLogin}")]
-        public UserEntity GetUser(string userLogin)
+        public IActionResult GetUser(string userLogin)
         {
-            return
-                _userContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
+            UserEntity userEntity;
+
+            userEntity = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
+
+            if (userEntity!=null)
+            {
+                return
+                    Ok(userEntity);
+            }
+            else
+            {
+                return
+                    BadRequest(new { Message = "User do not exists." });
+            }
         }
 
         [HttpPost]
@@ -34,10 +45,10 @@ namespace UserWebApi.Controllers
 
             try
             {
-                user.Id = _userContext.UserEntities.Count() + 1;
-                _userContext.UserEntities.Add(user);
-                _userContext.SaveChanges();
-                result = _userContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
+                user.Id = _dataBaseELContext.UserEntities.Count() + 1;
+                _dataBaseELContext.UserEntities.Add(user);
+                _dataBaseELContext.SaveChanges();
+                result = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
 
                 return
                     Ok(result);
@@ -56,11 +67,11 @@ namespace UserWebApi.Controllers
 
             try
             {
-                if (_userContext.UserEntities.Any(u => u.Id == user.Id))
+                if (_dataBaseELContext.UserEntities.Any(u => u.Id == user.Id))
                 {
-                    _userContext.UserEntities.Update(user);
-                    _userContext.SaveChanges();
-                    result = _userContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
+                    _dataBaseELContext.UserEntities.Update(user);
+                    _dataBaseELContext.SaveChanges();
+                    result = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.Id == user.Id);
 
                     return
                         Ok(result);
@@ -85,11 +96,11 @@ namespace UserWebApi.Controllers
 
             try
             {
-                if (_userContext.UserEntities.Any(u => u.UserLogin == userLogin))
+                if (_dataBaseELContext.UserEntities.Any(u => u.UserLogin == userLogin))
                 {
-                    result = _userContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
-                    _userContext.UserEntities.Remove(result);
-                    _userContext.SaveChanges();
+                    result = _dataBaseELContext.UserEntities.FirstOrDefault(u => u.UserLogin == userLogin);
+                    _dataBaseELContext.UserEntities.Remove(result);
+                    _dataBaseELContext.SaveChanges();
 
                     return
                         Ok(result);
