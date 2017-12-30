@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "";
+}
+
+@section Scripts {
+<script src="~/js/WebSocket.js" ></script>
+}
+
+<fieldset>
+    <legend>Info</legend>
+    <label for="inpYouNikename">You are:</label>
+    <input id="inpYouNikename" name="inpYouNikename" type="text" placeholder="Type your nikename…">
+    <label for="inpOtherNikename">Chat with:</label>
+    <input id="inpOtherNikename" name="inpOtherNikename" type="text" placeholder="Type someone's nikename…">
+    <button id="btnIn">LogIn</button>
+</fieldset>
+
+<div id="divchatConversation" class="cc2">
+</div>
+
+<fieldset>
+    <legend id="lready">...</legend>
+    <label for="inpPerson">Message:</label>
+    <textarea id="taMessage" placeholder="Type something…" disabled></textarea>
+    <button id="btnSend" disabled>Send</button>
+</fieldset>
