@@ -4,9 +4,10 @@
         var uri = 'ws://' + window.location.host + '/Chat?Name=' + name;
 
         $('#inpYouNikename,#inpOtherNikename,#btnIn').attr('disabled', 'disabled');
+        $('#aUserName').html(name);
+        $('#aUserName').attr('data-username', name);
 
         socket = new WebSocket(uri);
-        $('#aUserName').val(name);
 
         socket.onopen = function () {
             $('#lready').html('Ready to chat');
@@ -36,4 +37,18 @@
 
         $eMessage.val('');
     });
+
+    $('#btnChatWith').on('click', function () {
+        var $eReceiver = $('#inpOtherNikename');
+        var $eNav = $('#navChats');
+
+        $('#divChatWith').hide();
+        $eNav.find('.active').removeClass('active');
+        $eNav.append('<li class="active"><a href="#" data-username="' + $eReceiver.val() + '">' + $eReceiver.val() + '</a></li>');
+        $('#divChatConversations').append('<div data-username="' + $eReceiver.val() + '" class="cc2"></div>');
+        $('#divChatGeneral').show();        
+        
+    });
+
+
 });

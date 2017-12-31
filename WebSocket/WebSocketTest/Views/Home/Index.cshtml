@@ -3,24 +3,44 @@
 }
 
 @section Scripts {
-<script src="~/js/WebSocket.js" ></script>
+    <script src="~/js/WebSocket.js"></script>
 }
 
-<fieldset>
-    <legend>Info</legend>
-    <label for="inpYouNikename">You are:</label>
-    <input id="inpYouNikename" name="inpYouNikename" type="text" placeholder="Type your nikename…">
-    <label for="inpOtherNikename">Chat with:</label>
-    <input id="inpOtherNikename" name="inpOtherNikename" type="text" placeholder="Type someone's nikename…">
-    <button id="btnIn">LogIn</button>
-</fieldset>
+<ul class="nav nav-tabs" id="navChats">
+    <li class="active">
+        <a href="#">Who are you?</a>
+    </li>
+    <li>
+        <a href="#">Chat with</a>
+    </li>
+</ul>
 
-<div id="divchatConversation" class="cc2">
+<div id="divChatConteiner">
+    <div id="divWhoAreYou">
+        <fieldset>
+            <legend>...</legend>
+            <label for="inpYouNikename">You are:</label>
+            <input id="inpYouNikename" name="inpYouNikename" type="text" placeholder="Type your nikename…">
+            <button id="btnIn">LogIn</button>
+        </fieldset>
+    </div>
+    <div id="divChatWith" style="display:none;">
+        <fieldset>
+            <legend>...</legend>
+            <label for="inpOtherNikename">Chat with:</label>
+            <input id="inpOtherNikename" name="inpOtherNikename" type="text" placeholder="Type someone's nikename…">
+            <button id="btnChatWith">Go</button>
+        </fieldset>
+    </div>
+    <div id="divChatGeneral" style="display:none;">
+        <div id="divChatConversations"></div>
+        <div>
+            <fieldset>
+                <legend>Ready to Chat</legend>
+                <label>Message:</label>
+                <textarea id="taMessage" placeholder="Type something…"></textarea>
+                <button id="btnSend">Send</button>
+            </fieldset>
+        </div>
+    </div>
 </div>
-
-<fieldset>
-    <legend id="lready">...</legend>
-    <label for="inpPerson">Message:</label>
-    <textarea id="taMessage" placeholder="Type something…" disabled></textarea>
-    <button id="btnSend" disabled>Send</button>
-</fieldset>
