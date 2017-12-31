@@ -30,11 +30,12 @@ namespace WebSocketTest.Models.WstMessage
                     Connections.Add(connection);
                 }
 
-                return 
+                return
                     connection;
             }
 
-            return null;
+            return 
+                null;
         }
     }
 }

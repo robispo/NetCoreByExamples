@@ -10,6 +10,7 @@ namespace WebSocketTest.Models.WstMessage
         public WstmConnection(WstHandler handler) : base(handler) { }
 
         public string NickName { get; set; }
+        public bool AlreadyConnet { get; set; }
 
         public override async Task ReceiveAsync(string message)
         {

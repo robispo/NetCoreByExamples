@@ -13,5 +13,11 @@ namespace WebSocketTest.Controllers
             return 
                 View();
         }
+
+        public IActionResult TestChat()
+        {
+            return
+                View();
+        }
     }
 }
