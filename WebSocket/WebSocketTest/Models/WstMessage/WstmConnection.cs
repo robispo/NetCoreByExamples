@@ -12,21 +12,37 @@ namespace WebSocketTest.Models.WstMessage
         public string NickName { get; set; }
         public bool AlreadyConnet { get; set; }
 
+        public string RealNickName
+        {
+            get
+            {
+                int index;
+                index = this.NickName.IndexOf('-');
+
+                return
+                    this.NickName.Substring(0, index);
+            }
+        }
+
         public override async Task ReceiveAsync(string message)
         {
             var receiveMessage = JsonConvert.DeserializeObject<ReceiveMessage>(message);
 
-            var receiver = Handler.Connections.FirstOrDefault(m => ((WstmConnection)m).NickName == receiveMessage.Receiver);
+            //var receiver = Handler.Connections.FirstOrDefault(m => ((WstmConnection)m).NickName == receiveMessage.Receiver);
+            var receivers = Handler.Connections.Where(m => ((WstmConnection)m).NickName.Contains(receiveMessage.Receiver));
 
-            if (receiver != null)
+            if (receivers.Any())
             {
-                var sendMessage = JsonConvert.SerializeObject(new SendMessage
+                foreach (WstConnection receiver in receivers)
                 {
-                    Sender = NickName,
-                    Message = receiveMessage.Message
-                });
+                    var sendMessage = JsonConvert.SerializeObject(new SendMessage
+                    {
+                        Sender = RealNickName,
+                        Message = receiveMessage.Message
+                    });
 
-                await receiver.SendMessageAsync(sendMessage);
+                    await receiver.SendMessageAsync(sendMessage);
+                }                
             }
             else
             {

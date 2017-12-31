@@ -10,7 +10,7 @@
 
     $('#btnIn').on('click', function () {
         var name = $('#inpYouNikename').val();
-        var uri = 'ws://' + window.location.host + '/Chat?Name=' + name;
+        var uri = 'ws://' + window.location.host + '/Chat?Name=' + name +'-'+ guid();
 
         $('#inpYouNikename,#btnIn').attr('disabled', 'disabled');
         $aUser.html(name);
@@ -92,5 +92,13 @@
         $eConversations.find("[data-username='" + $eReceiver.attr('data-username') + "']").show();
     });
 
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
 
 });

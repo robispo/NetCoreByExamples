@@ -14,7 +14,7 @@ namespace WebSocketTest.Controllers
                 View();
         }
 
-        public IActionResult TestChat()
+        public IActionResult ChatRoom()
         {
             return
                 View();
