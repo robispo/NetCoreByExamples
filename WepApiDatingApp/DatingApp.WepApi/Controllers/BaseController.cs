@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DatingApp.WepApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [AllowAnonymous]
     public class BaseController : Controller
     {
         protected readonly DataContext _context;
