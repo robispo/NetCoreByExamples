@@ -31,7 +31,8 @@ namespace DatingApp.WepApi.Controllers
         {
             User user;
 
-            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+            if (!string.IsNullOrWhiteSpace(userForRegisterDto.Username))
+                userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
             if (await _repository.UserExists(userForRegisterDto.Username))
                 ModelState.AddModelError("username", "The username already exists");
